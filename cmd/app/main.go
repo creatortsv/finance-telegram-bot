@@ -71,5 +71,7 @@ func say(chatID int64) error {
 }
 
 func main() {
-	http.ListenAndServe(":"+port, http.HandlerFunc(Handler))
+	if err := http.ListenAndServe(":"+port, http.HandlerFunc(Handler)); err != nil {
+		panic(err)
+	}
 }
