@@ -39,7 +39,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := say(body.Message.Chat.ID); err != nil {
+	if err := say(body.Message.Chat.ID, body.Message.Text); err != nil {
 		fmt.Println("error in sending reply:", err)
 		return
 	}
@@ -47,10 +47,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Reply sent")
 }
 
-func say(chatID int64) error {
+func say(chatID int64, input string) error {
 	body := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   "Hello!",
+		Text:   "You told me: " + input + " and I'm telling you: Hello!",
 	}
 
 	bts, err := json.Marshal(body)
