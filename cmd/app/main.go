@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"flag"
 	"fmt"
 	"net/http"
 )
@@ -20,6 +21,13 @@ type webHookRequestBody struct {
 type sendMessageReqBody struct {
 	ChatID int64  `json:"chat_id"`
 	Text   string `json:"text"`
+}
+
+var token string
+
+func init() {
+	flag.StringVar(&token, "token", "", "Telegram bot token")
+	flag.Parse()
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +56,7 @@ func say(chatID int64) error {
 		return err
 	}
 
-	res, err := http.Post("https://api.telegram.org/bot1348686417:AAHATluFRN_HxZxC8Y6RxEfIVhHRMpfCINE/sendMessage", "application/json", bytes.NewBuffer(bts))
+	res, err := http.Post("https://api.telegram.org/bot"+token+"/sendMessage", "application/json", bytes.NewBuffer(bts))
 	if err != nil {
 		return err
 	}
