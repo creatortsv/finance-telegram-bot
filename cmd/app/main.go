@@ -71,7 +71,7 @@ func say(chatID int64) error {
 }
 
 func main() {
-	if err := http.ListenAndServe(":"+port, http.HandlerFunc(Handler)); err != nil {
+	if err := http.ListenAndServeTLS(":"+port, "./.ssh/url_cert.pem", "./.ssh/url_private.key", http.HandlerFunc(Handler)); err != nil {
 		panic(err)
 	}
 }
