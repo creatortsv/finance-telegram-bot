@@ -24,9 +24,11 @@ type sendMessageReqBody struct {
 }
 
 var token string
+var port string
 
 func init() {
 	flag.StringVar(&token, "token", "", "Telegram bot token")
+	flag.StringVar(&port, "port", "80", "Port")
 	flag.Parse()
 }
 
@@ -69,5 +71,5 @@ func say(chatID int64) error {
 }
 
 func main() {
-	http.ListenAndServe(":3000", http.HandlerFunc(Handler))
+	http.ListenAndServe(":"+port, http.HandlerFunc(Handler))
 }
