@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"math"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -70,7 +69,7 @@ func say(chatID int64, input string) error {
 
 	body := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   fmt.Sprintf("%s%s is %f%s", a[1], strings.ToUpper(a[2]), math.Round(r*100)/100, strings.ToUpper(a[3])),
+		Text:   fmt.Sprintf("%s%s is %s%s", a[1], strings.ToUpper(a[2]), fmt.Sprintf("%.2f", r), strings.ToUpper(a[3])),
 	}
 
 	bts, err := json.Marshal(body)
