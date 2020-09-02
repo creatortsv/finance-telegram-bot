@@ -35,9 +35,6 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Println(body.Message)
-	fmt.Println(body.Message.Text)
-
 	if err := say(body.Message.Chat.ID, body.Message.Text); err != nil {
 		fmt.Println("error in sending reply:", err)
 		return
@@ -72,7 +69,7 @@ func say(chatID int64, input string) error {
 
 	body := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   fmt.Sprintf("%s%s is %f%s", a[1], a[2], r, a[3]),
+		Text:   fmt.Sprintf("%s%s is %f%s", a[1], strings.ToUpper(a[2]), r, strings.ToUpper(a[3])),
 	}
 
 	bts, err := json.Marshal(body)
