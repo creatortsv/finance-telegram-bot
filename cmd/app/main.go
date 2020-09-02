@@ -36,6 +36,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Println(body.Message)
+	fmt.Println(body.Message.Text)
+
 	if err := say(body.Message.Chat.ID, body.Message.Text); err != nil {
 		fmt.Println("error in sending reply:", err)
 		return
