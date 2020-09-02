@@ -6,11 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"regexp"
-	"strconv"
-	"strings"
-
-	"github.com/creatortsv/finance-telegram-bot/internal/app/services/currency/exchangeratesapi"
 
 	"github.com/creatortsv/finance-telegram-bot/internal/app/env"
 )
@@ -49,35 +44,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 func say(chatID int64, input string) error {
 	var a []string
-	fmt.Println(input)
-	e, _ := regexp.Compile(`(change) ([0-9]{1,})([a-z]{3,3}) ([a-z]{3,3})`)
-	for i, m := range e.FindStringSubmatch(strings.ToLower(input)) {
-		if i > 0 {
-			fmt.Println(m)
-			a = append(a, m)
-		}
-	}
+	// e, _ := regexp.Compile(`(change) ([0-9]{1,})([a-z]{3,3}) ([a-z]{3,3})`)
+	// for i, m := range e.FindStringSubmatch(strings.ToLower(input)) {
+	// 	if i > 0 {
+	// 		a = append(a, m)
+	// 	}
+	// }
 
-	fmt.Println(a)
+	// c, err := exchangeratesapi.New(a[2])
+	// if err != nil {
+	// 	return err
+	// }
 
-	c, err := exchangeratesapi.New(a[2])
-	if err != nil {
-		return err
-	}
+	// p, err := strconv.ParseFloat(a[1], 64)
+	// if err != nil {
+	// 	return err
+	// }
 
-	p, err := strconv.ParseFloat(a[1], 64)
-	if err != nil {
-		return err
-	}
-
-	r, err := c.Exchange(p, a[3])
-	if err != nil {
-		return err
-	}
+	// r, err := c.Exchange(p, a[3])
+	// if err != nil {
+	// 	return err
+	// }
 
 	body := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   fmt.Sprintf("%s%s is %f%s", a[1], a[2], r, a[3]),
+		//Text:   fmt.Sprintf("%s%s is %f%s", a[1], a[2], r, a[3]),
+		Text: "Hello",
 	}
 
 	bts, err := json.Marshal(body)
