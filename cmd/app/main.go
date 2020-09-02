@@ -4,9 +4,15 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"net/http"
+	"regexp"
+	"strconv"
+	"strings"
+
+	"github.com/creatortsv/finance-telegram-bot/internal/app/services/currency/exchangeratesapi"
+
+	"github.com/creatortsv/finance-telegram-bot/internal/app/env"
 )
 
 type webHookRequestBody struct {
@@ -21,15 +27,6 @@ type webHookRequestBody struct {
 type sendMessageReqBody struct {
 	ChatID int64  `json:"chat_id"`
 	Text   string `json:"text"`
-}
-
-var token string
-var port string
-
-func init() {
-	flag.StringVar(&token, "token", "", "Telegram bot token")
-	flag.StringVar(&port, "port", "80", "Port")
-	flag.Parse()
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
@@ -48,9 +45,32 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func say(chatID int64, input string) error {
+	var a []string
+	e, _ := regexp.Compile(`(change) ([0-9]{1,})([a-z]{3,3}) ([a-z]{3,3})`)
+	for i, m := range e.FindStringSubmatch(strings.ToLower(input)) {
+		if i > 0 {
+			a[i-1] = m
+		}
+	}
+
+	c, err := exchangeratesapi.New(a[2])
+	if err != nil {
+		return err
+	}
+
+	p, err := strconv.ParseFloat(a[1], 64)
+	if err != nil {
+		return err
+	}
+
+	r, err := c.Exchange(p, a[3])
+	if err != nil {
+		return err
+	}
+
 	body := &sendMessageReqBody{
 		ChatID: chatID,
-		Text:   "You told me: " + input + " and I'm telling you: Hello!",
+		Text:   fmt.Sprintf("%s%s is %f%s", a[1], a[2], r, a[3]),
 	}
 
 	bts, err := json.Marshal(body)
@@ -58,7 +78,7 @@ func say(chatID int64, input string) error {
 		return err
 	}
 
-	res, err := http.Post("https://api.telegram.org/bot"+token+"/sendMessage", "application/json", bytes.NewBuffer(bts))
+	res, err := http.Post("https://api.telegram.org/bot"+env.Get("TOKEN")+"/sendMessage", "application/json", bytes.NewBuffer(bts))
 	if err != nil {
 		return err
 	}
@@ -71,7 +91,9 @@ func say(chatID int64, input string) error {
 }
 
 func main() {
-	if err := http.ListenAndServeTLS(":"+port, "./.ssh/url_cert.pem", "./.ssh/url_private.key", http.HandlerFunc(Handler)); err != nil {
+	env.InitSettings()
+
+	if err := http.ListenAndServeTLS(":"+env.Get("PORT"), "./.ssh/url_cert.pem", "./.ssh/url_private.key", http.HandlerFunc(Handler)); err != nil {
 		panic(err)
 	}
 }
