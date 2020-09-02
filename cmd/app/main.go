@@ -43,7 +43,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func say(chatID int64, input string) error {
-	var a []string
+	//var a []string
 	// e, _ := regexp.Compile(`(change) ([0-9]{1,})([a-z]{3,3}) ([a-z]{3,3})`)
 	// for i, m := range e.FindStringSubmatch(strings.ToLower(input)) {
 	// 	if i > 0 {
