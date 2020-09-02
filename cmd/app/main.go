@@ -49,7 +49,7 @@ func say(chatID int64, input string) error {
 	e, _ := regexp.Compile(`(change) ([0-9]{1,})([a-z]{3,3}) ([a-z]{3,3})`)
 	for i, m := range e.FindStringSubmatch(strings.ToLower(input)) {
 		if i > 0 {
-			a[i-1] = m
+			a = append(a, m)
 		}
 	}
 
