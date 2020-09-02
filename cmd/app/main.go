@@ -53,6 +53,8 @@ func say(chatID int64, input string) error {
 		}
 	}
 
+	fmt.Println(a)
+
 	c, err := exchangeratesapi.New(a[2])
 	if err != nil {
 		return err
